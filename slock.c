@@ -204,12 +204,6 @@ lockscreen(Display *dpy, int screen) {
     return lock;
 }
 
-static void
-usage(void) {
-    fprintf(stderr, "usage: slock [-v]\n");
-    exit(EXIT_FAILURE);
-}
-
 int
 main(int argc, char **argv) {
     Display *dpy;
@@ -217,8 +211,6 @@ main(int argc, char **argv) {
 
     if((argc == 2) && !strcmp("-v", argv[1]))
         die("slock-%s, © 2006-2012 Anselm R Garbe\n", VERSION);
-    else if(argc != 1)
-        usage();
 
     if(!(dpy = XOpenDisplay(0)))
         die("slock: cannot open display\n");
