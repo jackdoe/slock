@@ -94,7 +94,7 @@ readpw(Display *dpy)
             switch(ksym) {
             case XK_Return:
                 passwd[len] = 0;
-                                running = !auth(passwd);
+                running = !auth(passwd);
                 if(running)
                     XBell(dpy, 100);
                 len = 0;
