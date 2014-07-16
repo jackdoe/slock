@@ -36,14 +36,18 @@ dist: clean
 	@rm -rf slock-${VERSION}
 
 install: all
-	@echo installing executable file to ${DESTDIR}${PREFIX}/bin
+	@echo installing executable file to ${DESTDIR}${PREFIX}/bin and slock.pam into ${DESTDIR}${PREFIX}/etc
+	@echo dont forget to edit ${DESTDIR}${PREFIX}/etc/pam.d/slock
 	@mkdir -p ${DESTDIR}${PREFIX}/bin
+	@mkdir -p ${DESTDIR}${PREFIX}/etc/pam.d
 	@cp -f slock ${DESTDIR}${PREFIX}/bin
+	@cp -f slock.pam ${DESTDIR}${PREFIX}/etc/pam.d/slock
+
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/slock
 	@chmod u+s ${DESTDIR}${PREFIX}/bin/slock
 
 uninstall:
 	@echo removing executable file from ${DESTDIR}${PREFIX}/bin
 	@rm -f ${DESTDIR}${PREFIX}/bin/slock
-
+	@rm -f ${DESTDIR}${PREFIX}/etc/pam.d/slock
 .PHONY: all options clean dist install uninstall

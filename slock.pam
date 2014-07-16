@@ -1,0 +1,2 @@
+auth		required	pam_bsdauth.so		no_warn try_first_pass nullok
+

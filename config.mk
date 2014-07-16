@@ -10,16 +10,18 @@ X11INC = /usr/X11R6/include
 X11LIB = /usr/X11R6/lib
 
 # includes and libs
-INCS = -I. -I/usr/include -I${X11INC}
-LIBS = -L/usr/lib -lc -lcrypt -L${X11LIB} -lX11 -lXext -lpam 
+INCS = -I. -I/usr/include -I${X11INC} -I/usr/local/include
+
+
+# On OpenBSD and Darwin remove -lcrypt from LIBS
+LIBS = -L/usr/lib -L/usr/local/lib -lc -L${X11LIB} -lX11 -lXext -lpam -lcrypt
 
 # flags
+# On *BSD remove -DHAVE_SHADOW_H from CPPFLAGS and add -DHAVE_BSD_AUTH
 CPPFLAGS = -DVERSION=\"${VERSION}\" -DHAVE_SHADOW_H -DCOLOR1=\"black\" -DCOLOR2=\"\#005577\"
 CFLAGS = -std=c99 -pedantic -Wall -Os ${INCS} ${CPPFLAGS}
 LDFLAGS = -s ${LIBS}
 
-# On *BSD remove -DHAVE_SHADOW_H from CPPFLAGS and add -DHAVE_BSD_AUTH
-# On OpenBSD and Darwin remove -lcrypt from LIBS
 
 # compiler and linker
 CC = cc

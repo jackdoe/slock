@@ -43,22 +43,28 @@ static int conversation(int num_msg, const struct pam_message **msg, struct pam_
 
 static int auth(const char *password) {
     pam_handle_t* pamh; 
-    struct pam_response * reply = malloc(sizeof(struct pam_response));
-    struct pam_conv pamc = { conversation, reply };
-    int rc = 0;
+    struct passwd *pw;
+    if ((pw = getpwuid(getuid())) == NULL)
+        return 0;
 
+    struct pam_response * reply = malloc(sizeof(struct pam_response));
     if (!reply)
         return 0;
 
+    struct pam_conv pamc = { conversation, reply };
+    int rc = 0;
+
     reply->resp = strdup(password);
     reply->resp_retcode = 0; 
-
-    pam_start ("login", getenv ("USER"), &pamc, &pamh); 
-    if (pam_authenticate (pamh, 0) == PAM_SUCCESS) 
-        rc = 1;
-
-    pam_end (pamh, 0); 
-    return rc; 
+    pam_start("slock", pw->pw_name, &pamc, &pamh);
+    if (pam_set_item(pamh, PAM_AUTHTOK, password) == PAM_SUCCESS        &&
+        pam_authenticate(pamh,PAM_DISALLOW_NULL_AUTHTOK) == PAM_SUCCESS &&
+        pam_acct_mgmt(pamh, 0) == PAM_SUCCESS                           &&
+        pam_setcred(pamh, PAM_REFRESH_CRED) == PAM_SUCCESS) {
+           rc = 1;
+    }
+    pam_end(pamh,0);
+    return rc;
 }
 
 static void
